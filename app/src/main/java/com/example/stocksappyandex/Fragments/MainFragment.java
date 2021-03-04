@@ -1,10 +1,13 @@
 package com.example.stocksappyandex.Fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.stocksappyandex.Data.Company;
+import com.example.stocksappyandex.MainActivity;
 import com.example.stocksappyandex.R;
 import com.example.stocksappyandex.SectionsStagePagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -34,11 +38,14 @@ public class MainFragment extends Fragment {
 
     public static Company selectedCompany;
 
+    private EditText editTextSearch;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_page_layout,container,false);
 
+        editTextSearch = view.findViewById(R.id.editTextTextPersonName);
 
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
@@ -67,6 +74,26 @@ public class MainFragment extends Fragment {
         }).attach();
 
 
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String search = "%" + s.toString() + "%";
+                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String search = "%" + s.toString() + "%";
+                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = "%" + s.toString() + "%";
+                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+            }
+        });
 
         return view;
 

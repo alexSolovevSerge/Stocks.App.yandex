@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -61,8 +62,7 @@ public class RecyclerViewStocksFragment extends Fragment {
 
         recyclerViewCompanies.setAdapter(adapter);
 
-        getData(viewModel.getCompanies());
-        //RecyclerViewFaouriteFragment.getData(this,viewModel.getFavouriteCompanys());
+        getData(this,viewModel.getCompanies());
 
 
         try {
@@ -92,10 +92,10 @@ public class RecyclerViewStocksFragment extends Fragment {
 
 
     }
-    public boolean getData(LiveData<List<Company>> data ){
+    public static boolean getData(LifecycleOwner owner,LiveData<List<Company>> data ){
         LiveData<List<Company>> companiesFromDB = data;
         List<Company> comp = new ArrayList<>();
-        companiesFromDB.observe(this, new Observer<List<Company>>() {
+        companiesFromDB.observe(owner, new Observer<List<Company>>() {
             @Override
             public void onChanged(List<Company> companiesFromLiveData) {
                 list.clear();
