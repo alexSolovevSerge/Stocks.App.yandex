@@ -164,16 +164,10 @@ public class JSONUtils {
                         }
                     }
 
-
-
-
                 }
             };
             thread2 = new Thread(runnable1);
             thread2.start();
-
-
-
         }
     }
 
