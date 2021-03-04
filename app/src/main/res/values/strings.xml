@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Stocks App(yandex)</string>
+    <string name="stocks">Stocks</string>
+    <string name="favourite">Favourite</string>
+    <string name="chart">Chart</string>
+    <string name="summary">Summary</string>
+    <string name="news">News</string>
+    <string name="forecasts">Forecasts</string>
+    <string name="idea">Idea</string>
+</resources>
