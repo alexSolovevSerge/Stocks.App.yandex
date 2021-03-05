@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -38,7 +39,8 @@ public class MainFragment extends Fragment {
 
     public static Company selectedCompany;
 
-    private EditText editTextSearch;
+    public static EditText editTextSearch;
+    public static ConstraintLayout root;
 
     @Nullable
     @Override
@@ -46,6 +48,8 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.main_page_layout,container,false);
 
         editTextSearch = view.findViewById(R.id.editTextTextPersonName);
+
+         root = view.findViewById(R.id.mainPageLayout);
 
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 

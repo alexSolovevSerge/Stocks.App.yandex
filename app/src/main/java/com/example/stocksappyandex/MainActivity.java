@@ -2,6 +2,8 @@ package com.example.stocksappyandex;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -40,11 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static List<Company> listStock = new ArrayList<>();
     public static List<Company> listFavourites = new ArrayList<>();
+    public static ConstraintSet startScrollAnimation = new ConstraintSet();
+    public static ConstraintSet endScrollAnimation = new ConstraintSet();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startScrollAnimation.clone(this,R.layout.main_page_layout);
+        endScrollAnimation.clone(this,R.layout.main_page_layout_scroll);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
