@@ -37,84 +37,18 @@ import static androidx.core.content.ContextCompat.getSystemService;
 public class RecyclerViewStocksFragment extends Fragment {
 
     public static List<Company> list = new ArrayList<>();
-    public static Handler handler = new Handler();
 
-    public static CompaniesAdapter adapter;
+
     public static RecyclerView recyclerViewCompanies;
-    public static MainViewModel viewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycle_view_stocks,container,false);
-
         recyclerViewCompanies = view.findViewById(R.id.recycleViewStocks);
-
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
-
-        NetworkUtils.GetArray getArray = new NetworkUtils.GetArray(getContext(),getActivity());
-
-
-        adapter = new CompaniesAdapter(list);
-
-
         recyclerViewCompanies.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        recyclerViewCompanies.setAdapter(adapter);
-
-        getData(this,viewModel.getCompanies());
-
-
-        try {
-            if(viewModel.getCompaniesCount()>0){
-
-
-            }else{
-                getArray.getArr();
-
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        adapter.setOnCompanyClickListener(new CompaniesAdapter.OnCompanyClickListener() {
-            @Override
-            public void onNoteClick(int position) {
-               setSelectedFragment(position);
-
-            }
-        });
-
-
+        recyclerViewCompanies.setAdapter(MainActivity.adapterStock);
     return view;
 
 
-    }
-    public static boolean getData(LifecycleOwner owner,LiveData<List<Company>> data ){
-        LiveData<List<Company>> companiesFromDB = data;
-        List<Company> comp = new ArrayList<>();
-        companiesFromDB.observe(owner, new Observer<List<Company>>() {
-            @Override
-            public void onChanged(List<Company> companiesFromLiveData) {
-                list.clear();
-                list.addAll(companiesFromLiveData);
-                adapter.notifyDataSetChanged();
-            }
-        });
-        if(comp.size()>0){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    private void setSelectedFragment(int position){
-        MainFragment.selectedCompany = adapter.getCompany(position);
-        MainActivity.adapter.addFragment(new SelectedCompanyFragment());
-        MainActivity.adapter.createFragment(1);
-        MainActivity.adapter.notifyDataSetChanged();
-        MainActivity.viewPager.setCurrentItem(1);
     }
 }

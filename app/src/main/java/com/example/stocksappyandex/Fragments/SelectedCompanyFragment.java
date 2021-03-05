@@ -102,14 +102,14 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
     private void favoutiteSetterButton(){
         if(MainFragment.selectedCompany.isFavourite()){
             MainFragment.selectedCompany.setFavourite(false);
-            RecyclerViewStocksFragment.viewModel.updateCompany(MainFragment.selectedCompany);
+            MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.nonfavourite);
-            RecyclerViewStocksFragment.adapter.notifyDataSetChanged();
+            MainActivity.adapterStock.notifyDataSetChanged();
         }else{
             MainFragment.selectedCompany.setFavourite(true);
-            RecyclerViewStocksFragment.viewModel.updateCompany(MainFragment.selectedCompany);
+            MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.favourite);
-            RecyclerViewStocksFragment.adapter.notifyDataSetChanged();
+            MainActivity.adapterStock.notifyDataSetChanged();
         }
     }
 }

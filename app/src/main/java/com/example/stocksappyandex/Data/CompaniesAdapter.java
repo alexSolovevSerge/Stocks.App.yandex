@@ -17,7 +17,7 @@ import com.example.stocksappyandex.R;
 
 import java.util.List;
 
-import static com.example.stocksappyandex.Fragments.RecyclerViewStocksFragment.viewModel;
+import static com.example.stocksappyandex.MainActivity.viewModel;
 
 public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.CompaniesViewHolder> {
 

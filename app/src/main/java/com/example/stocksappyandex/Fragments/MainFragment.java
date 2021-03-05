@@ -78,20 +78,20 @@ public class MainFragment extends Fragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 String search = "%" + s.toString() + "%";
-                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+                MainActivity.getDataStock(getViewLifecycleOwner(),MainActivity.viewModel.getSearchedCompanys(search));
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String search = "%" + s.toString() + "%";
-                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+                MainActivity.getDataStock(getViewLifecycleOwner(),MainActivity.viewModel.getSearchedCompanys(search));
 
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 String search = "%" + s.toString() + "%";
-                RecyclerViewStocksFragment.getData(getViewLifecycleOwner(),RecyclerViewStocksFragment.viewModel.getSearchedCompanys(search));
+                MainActivity.getDataStock(getViewLifecycleOwner(),MainActivity.viewModel.getSearchedCompanys(search));
             }
         });
 

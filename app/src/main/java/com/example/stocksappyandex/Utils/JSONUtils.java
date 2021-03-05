@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.example.stocksappyandex.Fragments.RecyclerViewStocksFragment.handler;
+import static com.example.stocksappyandex.MainActivity.handler;
 
 public class JSONUtils {
 
@@ -153,7 +153,7 @@ public class JSONUtils {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                RecyclerViewStocksFragment.adapter.setNewCompany(company);
+                                MainActivity.adapterStock.setNewCompany(company);
                             }
                         });
                     } catch (JSONException | IOException e) {
