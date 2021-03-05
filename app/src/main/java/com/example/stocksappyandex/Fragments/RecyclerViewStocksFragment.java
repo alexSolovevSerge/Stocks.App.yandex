@@ -43,11 +43,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 public class RecyclerViewStocksFragment extends Fragment {
 
-    public static List<Company> list = new ArrayList<>();
-
-    private static int fistVisibleView;
-
-
+    public static int key = 0;
     public static RecyclerView recyclerViewCompanies;
     @Nullable
     @Override
@@ -57,23 +53,20 @@ public class RecyclerViewStocksFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerViewCompanies.setLayoutManager(layoutManager);
         recyclerViewCompanies.setAdapter(MainActivity.adapterStock);
-
         TransitionManager.beginDelayedTransition(MainFragment.root);
-        int viewIdFirst = layoutManager.findFirstVisibleItemPosition();
         recyclerViewCompanies.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int viewIdSecond = layoutManager.findFirstVisibleItemPosition();
-                if(viewIdSecond<3){
+                if(viewIdSecond<3&&key==1){
                     MainActivity.startScrollAnimation.applyTo(MainFragment.root);
-                }else if(viewIdSecond>3) {
+                    key=0;
+                }else if(viewIdSecond>3&&key==0) {
                     MainActivity.endScrollAnimation.applyTo(MainFragment.root);
+                    key = 1;
                 }
             }
         });
-
     return view;
-
-
     }
 }

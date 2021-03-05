@@ -1,6 +1,7 @@
 package com.example.stocksappyandex.Fragments;
 
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.stocksappyandex.R;
 
 public class RecyclerViewFaouriteFragment extends Fragment {
 
+
     public static RecyclerView recyclerViewFavouriteCompanies;
 
     @Nullable
@@ -26,7 +28,8 @@ public class RecyclerViewFaouriteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycle_view_favourite,container,false);
         recyclerViewFavouriteCompanies = view.findViewById(R.id.recycleViewFavourite);
-        recyclerViewFavouriteCompanies.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerViewFavouriteCompanies.setLayoutManager(layoutManager);
         recyclerViewFavouriteCompanies.setAdapter(MainActivity.adapterFavourites);
         return view;
     }

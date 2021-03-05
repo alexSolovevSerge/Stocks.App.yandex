@@ -30,9 +30,6 @@ public class SectionsStagePagerAdapter extends FragmentStateAdapter {
     public Fragment getFragment(int position){
         return mFragmentList.get(position);
     }
-
-
-
     public void removeFragment(int position){
         mFragmentList.remove(position);
     }

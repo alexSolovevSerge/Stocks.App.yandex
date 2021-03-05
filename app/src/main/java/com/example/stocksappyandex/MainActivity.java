@@ -50,23 +50,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         startScrollAnimation.clone(this,R.layout.main_page_layout);
         endScrollAnimation.clone(this,R.layout.main_page_layout_scroll);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         viewPager = findViewById(R.id.container);
-
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
         NetworkUtils.GetArray getArray = new NetworkUtils.GetArray(this,this);
-
         adapterStock = new CompaniesAdapter(listStock);
         adapterFavourites = new CompaniesAdapter(listFavourites);
-
-
-
         getDataStock(this,viewModel.getCompanies());
         getDataFavourite(viewModel.getFavouriteCompanys());
         try {
@@ -79,15 +71,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         adapter = new SectionsStagePagerAdapter(getSupportFragmentManager(),getLifecycle());
         adapter.addFragment(new MainFragment());
         adapter.createFragment(0);
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(false);
-
-
         adapterStock.setOnCompanyClickListener(new CompaniesAdapter.OnCompanyClickListener() {
             @Override
             public void onNoteClick(int position) {
@@ -95,14 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
         adapterFavourites.setOnCompanyClickListener(new CompaniesAdapter.OnCompanyClickListener() {
             @Override
             public void onNoteClick(int position) {
                 setSelectedFragmentFavourites(position);
             }
         });
-
     }
 
     private void setupViewPager(ViewPager viewPager){}
