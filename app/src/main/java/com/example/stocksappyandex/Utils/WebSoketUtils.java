@@ -79,11 +79,9 @@ public class WebSoketUtils {
             Matcher matcherPrice = patternPrice.matcher(text);
             while (matcherTicker.find()) {
                 String a = matcherTicker.group().substring(6).replace("\",", "");
-                Log.i("huita", a);
                 Company company = MainActivity.viewModel.getCompanyByTicker(a);
                 while (matcherPrice.find()) {
                     Double b = Double.parseDouble(matcherPrice.group().substring(4).replace(",", ""));
-                    Log.i("huita", b.toString());
                     if(company.getCurrentprice()!=b){
                         company.setDeltaprice(company.getCurrentprice()-b);
                         company.setCurrentprice(b);

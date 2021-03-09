@@ -102,14 +102,12 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             MainFragment.selectedCompany.setFavourite(false);
             MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.nonfavourite);
-            MainActivity.adapterStock.notifyDataSetChanged();
-            MainActivity.adapterFavourites.notifyDataSetChanged();
+
         }else{
             MainFragment.selectedCompany.setFavourite(true);
             MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.favourite);
-            MainActivity.adapterStock.notifyDataSetChanged();
-            MainActivity.adapterFavourites.notifyDataSetChanged();
+
         }
     }
 

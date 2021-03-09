@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 listFavourites.clear();
                 listFavourites.addAll(companiesFromLiveData);
                 adapterFavourites.notifyDataSetChanged();
+                adapterStock.notifyDataSetChanged();
             }
         });
         if(comp.size()>0){
