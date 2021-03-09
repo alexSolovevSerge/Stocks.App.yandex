@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -21,6 +22,7 @@ import com.example.stocksappyandex.Data.MainViewModel;
 import com.example.stocksappyandex.Fragments.MainFragment;
 import com.example.stocksappyandex.Fragments.SelectedCompanyFragment;
 import com.example.stocksappyandex.Utils.NetworkUtils;
+import com.example.stocksappyandex.Utils.WebSoketUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static List<Company> listStock = new ArrayList<>();
     public static List<Company> listFavourites = new ArrayList<>();
-    public static ConstraintSet startScrollAnimation = new ConstraintSet();
-    public static ConstraintSet endScrollAnimation = new ConstraintSet();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startScrollAnimation.clone(this,R.layout.main_page_layout);
-        endScrollAnimation.clone(this,R.layout.main_page_layout_scroll);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         viewPager = findViewById(R.id.container);
@@ -61,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         adapterFavourites = new CompaniesAdapter(listFavourites);
         getDataStock(this,viewModel.getCompanies());
         getDataFavourite(viewModel.getFavouriteCompanys());
+        new WebSoketUtils().getTickerPrice(listStock);
         try {
             if(viewModel.getCompaniesCount()>0){}
             else{
@@ -76,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.createFragment(0);
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(false);
+
+
+
         adapterStock.setOnCompanyClickListener(new CompaniesAdapter.OnCompanyClickListener() {
             @Override
             public void onNoteClick(int position) {

@@ -67,6 +67,9 @@ public class MainViewModel extends AndroidViewModel {
     public Company getCompanyId(int id){
         return database.companiesDao().getCompanyById(id);
     }
+    public Company getCompanyByTicker(String ticker){
+        return database.companiesDao().getCompanyByTicker(ticker);
+    }
     public void setCompanies(List<Company> companies){
         deleteAllCompanies();
         Runnable runnable = new Runnable() {

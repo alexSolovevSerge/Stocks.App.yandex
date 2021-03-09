@@ -40,8 +40,6 @@ public class MainFragment extends Fragment {
     public static Company selectedCompany;
 
     public static EditText editTextSearch;
-    public static ConstraintLayout root;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,7 +47,6 @@ public class MainFragment extends Fragment {
 
         editTextSearch = view.findViewById(R.id.editTextTextPersonName);
 
-         root = view.findViewById(R.id.mainPageLayout);
 
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
