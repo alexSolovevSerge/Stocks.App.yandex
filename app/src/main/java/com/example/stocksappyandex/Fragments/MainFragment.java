@@ -59,16 +59,12 @@ public class MainFragment extends Fragment {
         names.add("Favourites");
 
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutStockAndFavourite);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         new TabLayoutMediator(tabLayout, viewPager, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
 
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                for(String a : names) {
-                    if (position != pos) {
-                        tab.setText(a);
-                        pos = 0;
-                    }
-                }
+                tab.setText(names.get(position));
 
 
             }

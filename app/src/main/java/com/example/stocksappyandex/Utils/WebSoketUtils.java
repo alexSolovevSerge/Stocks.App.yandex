@@ -29,7 +29,7 @@ public class WebSoketUtils {
                 try {
                     ws = connect();
                     while(true){
-                        if(list.size()>0) {
+                        if(list.size()==26) {
                             try {
                                 ws = connect();
                                 for (Company a : list) {
@@ -59,26 +59,7 @@ public class WebSoketUtils {
                 .addListener(new WebSocketAdapter() {
                     @Override
                     public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                        if (text.contains("trade")) {
-                            Pattern patternTicker = Pattern.compile(",\"s\":\"(.*?)\",");
-                            Matcher matcherTicker = patternTicker.matcher(text);
-                            Pattern patternPrice = Pattern.compile("\"p\":(.*?),");
-                            Matcher matcherPrice = patternPrice.matcher(text);
-                            while (matcherTicker.find()) {
-                                String a = matcherTicker.group().substring(6).replace("\",", "");
-                                Log.i("huita", a);
-                                Company company = MainActivity.viewModel.getCompanyByTicker(a);
-                                while (matcherPrice.find()) {
-                                    Double b = Double.parseDouble(matcherPrice.group().substring(4).replace(",", ""));
-                                    Log.i("huita", b.toString());
-                                    if(company.getCurrentprice()!=b){
-                                        company.setDeltaprice(company.getCurrentprice()-b);
-                                        company.setCurrentprice(b);
-                                        MainActivity.viewModel.updateCompany(company);
-                                    }
-                                }
-                            }
-                        }
+                        if(text.length()<120){setPrice(text);}
                     }
                 })
                 .addExtension(WebSocketExtension.PERMESSAGE_DEFLATE)
@@ -88,5 +69,28 @@ public class WebSoketUtils {
 
     private BufferedReader getInput() throws IOException {
         return new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    private void setPrice(String text){
+        if (text.contains("trade")) {
+            Pattern patternTicker = Pattern.compile(",\"s\":\"(.*?)\",");
+            Matcher matcherTicker = patternTicker.matcher(text);
+            Pattern patternPrice = Pattern.compile("\"p\":(.*?),");
+            Matcher matcherPrice = patternPrice.matcher(text);
+            while (matcherTicker.find()) {
+                String a = matcherTicker.group().substring(6).replace("\",", "");
+                Log.i("huita", a);
+                Company company = MainActivity.viewModel.getCompanyByTicker(a);
+                while (matcherPrice.find()) {
+                    Double b = Double.parseDouble(matcherPrice.group().substring(4).replace(",", ""));
+                    Log.i("huita", b.toString());
+                    if(company.getCurrentprice()!=b){
+                        company.setDeltaprice(company.getCurrentprice()-b);
+                        company.setCurrentprice(b);
+                        MainActivity.viewModel.updateCompany(company);
+                    }
+                }
+            }
+        }
     }
 }

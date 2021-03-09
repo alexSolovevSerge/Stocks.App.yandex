@@ -7,4 +7,5 @@
     <string name="news">News</string>
     <string name="forecasts">Forecasts</string>
     <string name="idea">Idea</string>
+    <string name="description">Description</string>
 </resources>

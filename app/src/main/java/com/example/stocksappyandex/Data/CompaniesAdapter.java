@@ -1,6 +1,7 @@
 package com.example.stocksappyandex.Data;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.stocksappyandex.R;
@@ -53,10 +55,10 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.Comp
         holder.textViewcurrentPrice.setText(String.format("$%.3f", company.getCurrentprice()));
         if(deltaprice<0) {
             holder.textViewDeltaPrice.setText(String.format("-$%.3f", Math.abs(company.getDeltaprice())));
-            holder.textViewDeltaPrice.setTextColor(Color.RED);
+            holder.textViewDeltaPrice.setTextColor(Color.parseColor("#ffff4444"));
         }else if (deltaprice>0){
             holder.textViewDeltaPrice.setText(String.format("+$%.3f", Math.abs(company.getDeltaprice())));
-            holder.textViewDeltaPrice.setTextColor(Color.GREEN);
+            holder.textViewDeltaPrice.setTextColor(Color.parseColor("#00d024"));
         }
         String bitmap = company.getBitmap();
         if(bitmap!=null) {

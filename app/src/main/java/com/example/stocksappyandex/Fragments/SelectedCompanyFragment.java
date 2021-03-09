@@ -16,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.stocksappyandex.Data.Company;
 import com.example.stocksappyandex.MainActivity;
 import com.example.stocksappyandex.R;
+import com.example.stocksappyandex.SectionsStagePagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -27,7 +28,9 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
     public static ImageView imageViewFavourite;
     private ViewPager2 viewPagerInfo;
     private Button buttonBack;
-    public static int pos1 = -1;
+
+    private SectionsStagePagerAdapter sectionsStagePagerAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,31 +38,26 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
 
         viewPagerInfo = view.findViewById(R.id.containerSelectedInfo);
 
+        sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
+        setupViewPager(viewPagerInfo);
 
         List<String> names = new ArrayList<>();
         names.add("Chart");
         names.add("Summary");
         names.add("News");
-        names.add("Forcasts");
+        names.add("Forecasts");
         names.add("Idea");
-/*
-        TabLayout tabLayout = view.findViewById(R.id.tabLayoutInfo);
-        new TabLayoutMediator(tabLayout, viewPagerInfo, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
 
+        TabLayout tabLayout = view.findViewById(R.id.tabLayoutInfo);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        new TabLayoutMediator(tabLayout, viewPagerInfo, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                for(String a : names) {
-                    if (position > pos1) {
-                        tab.setText(a);
-                        pos1 ++;
-                    }
-                }
-
-
+                tab.setText(names.get(position));
             }
         }).attach();
-*/
+
 
         textViewCompanyTitle = view.findViewById(R.id.textViewCompanyName);
         imageViewFavourite = view.findViewById(R.id.imageViewFavouriteChoice);
@@ -105,11 +103,32 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.nonfavourite);
             MainActivity.adapterStock.notifyDataSetChanged();
+            MainActivity.adapterFavourites.notifyDataSetChanged();
         }else{
             MainFragment.selectedCompany.setFavourite(true);
             MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.favourite);
             MainActivity.adapterStock.notifyDataSetChanged();
+            MainActivity.adapterFavourites.notifyDataSetChanged();
         }
+    }
+
+    private void setupViewPager(ViewPager2 viewPager){
+        SectionsStagePagerAdapter adapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
+        adapter.addFragment(new GraphFragment());
+        adapter.addFragment(new DescriptionFragment());
+        adapter.addFragment(new NewsFragment());
+        adapter.addFragment(new ForecastsFragment());
+        adapter.addFragment(new IdeaFragment());
+        adapter.createFragment(0);
+        adapter.createFragment(1);
+        adapter.createFragment(2);
+        adapter.createFragment(3);
+        adapter.createFragment(4);
+
+
+
+        viewPager.setAdapter(adapter);
+
     }
 }
