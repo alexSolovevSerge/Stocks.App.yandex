@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static java.lang.Thread.sleep;
+
 public class NetworkUtils {
 
 
@@ -63,9 +65,9 @@ public class NetworkUtils {
                         JSONUtils.GetListCompanyObj getListCompanyObj = new JSONUtils.GetListCompanyObj(context, activity);
                         List<String> res = new ArrayList<>();
                         for (String a : set) {
-                            res.add(a);
+                                res.add(a);
                         }
-                        for (int i = 0; i < res.size() - 1; i = i + 2) {
+                        for (int i = 0; i <= res.size() - 1; i = i + 2) {
                             getListCompanyObj.getList(res.get(i));
                             getListCompanyObj.getList(res.get(i + 1));
                         }
