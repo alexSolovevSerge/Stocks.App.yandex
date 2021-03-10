@@ -14,9 +14,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.Provider;
+import java.security.acl.Owner;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Thread.sleep;
 
 public class WebSoketUtils {
     String socketURL = "{\"type\":\"subscribe\",\"symbol\":\"%s\"}";
@@ -54,11 +57,12 @@ public class WebSoketUtils {
 
     private WebSocket connect() throws Exception {
         return new WebSocketFactory()
-                .setConnectionTimeout(1000)
+                .setConnectionTimeout(5000)
                 .createSocket("wss://ws.finnhub.io?token=c0nq0h748v6u2iq11630")
                 .addListener(new WebSocketAdapter() {
                     @Override
                     public void onTextMessage(WebSocket websocket, String text) throws Exception {
+                        Log.i("websocket", text);
                         if(text.length()<120){setPrice(text);}
                     }
                 })
@@ -72,6 +76,7 @@ public class WebSoketUtils {
     }
 
     private void setPrice(String text){
+
         if (text.contains("trade")) {
             Pattern patternTicker = Pattern.compile(",\"s\":\"(.*?)\",");
             Matcher matcherTicker = patternTicker.matcher(text);

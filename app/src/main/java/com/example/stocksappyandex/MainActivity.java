@@ -88,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
         adapterFavourites.setOnCompanyClickListener(new CompaniesAdapter.OnCompanyClickListener() {
             @Override
             public void onNoteClick(int position) {
+                viewPager.setCurrentItem(0);
                 setSelectedFragmentFavourites(position);
+
             }
         });
     }
@@ -148,4 +150,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    public static void backButtonOnSearch(){
+
+    }
+
 }

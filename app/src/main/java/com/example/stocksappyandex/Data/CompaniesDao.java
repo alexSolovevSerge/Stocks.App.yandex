@@ -16,7 +16,7 @@ public interface CompaniesDao {
     @Query("SELECT * FROM companies WHERE favourite")
     LiveData<List<Company>> getFavouriteCompanies();
 
-    @Query("Select * FROM companies where name LIKE :call")
+    @Query("Select * FROM companies where name LIKE :call ORDER BY ticker")
     LiveData<List<Company>> getSearchedCompanies(String call);
 
     @Insert

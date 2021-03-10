@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -31,7 +33,6 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    public static int pos = 3;
 
     private SectionsStagePagerAdapter sectionsStagePagerAdapter;
 
@@ -40,6 +41,8 @@ public class MainFragment extends Fragment {
     public static Company selectedCompany;
 
     public static EditText editTextSearch;
+
+    public static LinearLayout linearLayoutFragments;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class MainFragment extends Fragment {
 
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
+        linearLayoutFragments = view.findViewById(R.id.linearViewPage);
 
         viewPager = view.findViewById(R.id.containerStocksFav);
 
@@ -59,7 +63,7 @@ public class MainFragment extends Fragment {
         names.add("Favourites");
 
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutStockAndFavourite);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
         new TabLayoutMediator(tabLayout, viewPager, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
 
             @Override
@@ -70,6 +74,38 @@ public class MainFragment extends Fragment {
             }
         }).attach();
 
+
+        editTextSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        editTextSearch.clearFocus();
+                    }
+                };
+                requireActivity().getOnBackPressedDispatcher().addCallback(callback);
+
+                if (hasFocus) {
+
+                    viewPager.setCurrentItem(0);
+                    RecyclerViewStocksFragment.recyclerViewCompanies.scrollToPosition(0);
+                    linearLayoutFragments.setVisibility(View.GONE);
+                }
+                else{
+
+                    editTextSearch.setText("");
+                    linearLayoutFragments.setVisibility(View.VISIBLE);
+                    callback = new OnBackPressedCallback(true) {
+                        @Override
+                        public void handleOnBackPressed() {
+                            getActivity().moveTaskToBack(true);
+                        }
+                    };
+                    requireActivity().getOnBackPressedDispatcher().addCallback(callback);
+                }
+            }
+        });
 
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,6 +118,12 @@ public class MainFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String search = "%" + s.toString() + "%";
                 MainActivity.getDataStock(getViewLifecycleOwner(),MainActivity.viewModel.getSearchedCompanys(search));
+                if(editTextSearch.getText().length()!=0){
+
+                    linearLayoutFragments.setVisibility(View.VISIBLE);
+                }else if(editTextSearch.getText().length()==0){
+                    linearLayoutFragments.setVisibility(View.GONE);
+                }
 
             }
 
@@ -103,9 +145,6 @@ public class MainFragment extends Fragment {
         adapter.addFragment(new RecyclerViewFaouriteFragment());
         adapter.createFragment(0);
         adapter.createFragment(1);
-
-
         viewPager.setAdapter(adapter);
-
     }
 }

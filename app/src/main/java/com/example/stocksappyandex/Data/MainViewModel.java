@@ -26,18 +26,21 @@ public class MainViewModel extends AndroidViewModel {
         companies = database.companiesDao().getAllCompanies();
     }
 
+
     public LiveData<List<Company>> getCompanies(){
         return companies;
     }
+
     public LiveData<List<Company>> getFavouriteCompanys(){
         return database.companiesDao().getFavouriteCompanies();
     }
+
     public LiveData<List<Company>> getSearchedCompanys(String search){
         return database.companiesDao().getSearchedCompanies(search);
     }
+
     public void updateCompany(Company company){
         new CompanyUpdater().execute(company);
-
     }
 
     public int getCompaniesCount() throws ExecutionException, InterruptedException {

@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
+import androidx.activity.OnBackPressedDispatcherOwner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +25,8 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.callback.Callback;
 
 public class SelectedCompanyFragment extends Fragment implements View.OnClickListener {
     public static TextView textViewCompanyTitle;
@@ -76,8 +81,17 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             }
         }
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                destroySelectedCompanyFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(callback);
+
         return view;
     }
+
 
 
     @Override
@@ -92,6 +106,7 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         }
 
     }
+
     private void destroySelectedCompanyFragment(){
        MainActivity.viewPager.setCurrentItem(0);
        MainActivity.adapter.removeFragment(1);
@@ -107,6 +122,7 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             MainFragment.selectedCompany.setFavourite(true);
             MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
             imageViewFavourite.setImageResource(R.drawable.favourite);
+
 
         }
     }
@@ -129,4 +145,5 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         viewPager.setAdapter(adapter);
 
     }
+
 }
