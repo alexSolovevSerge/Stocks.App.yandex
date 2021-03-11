@@ -29,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class JSONUtils {
             this.activity = activity;
             this.context = context;
         }
+
+        //Загрузка информации о тикерах с API
 
         public void getList(String ticker) {
             Runnable runnable = new Runnable() {
@@ -129,6 +132,9 @@ public class JSONUtils {
                 return null;
             }
         }
+
+        // Загрузка цен на акции с API
+
         private CompaniesDatabase database;
         public  void getPrice(Company company) {
 
@@ -176,6 +182,9 @@ public class JSONUtils {
             thread2.start();
         }
 
+
+        //Загрузка данных для чарта с API
+
         public static void getChart(String range){
             String day = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=5min&apikey=8CQ70Y2Z0I959N5C";
             String days = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
@@ -206,16 +215,7 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-                            int i = 0;
-                            MainActivity.candleEntries.clear();
-                            for(JSONObject a : results){
-                                float shadowH = Float.parseFloat(a.getString("2. high"));
-                                float shadowL = Float.parseFloat(a.getString("3. low"));
-                                float open = Float.parseFloat(a.getString("1. open"));
-                                float close = Float.parseFloat(a.getString("4. close"));
-                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
-                                i++;
-                            }
+                            setListEntries(results,null);
                             setData();
 
 
@@ -245,17 +245,7 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-                            int i = 0;
-                            MainActivity.candleEntries.clear();
-                            for(JSONObject a : results){
-                                float shadowH = Float.parseFloat(a.getString("2. high"));
-                                float shadowL = Float.parseFloat(a.getString("3. low"));
-                                float open = Float.parseFloat(a.getString("1. open"));
-                                float close = Float.parseFloat(a.getString("4. close"));
-                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
-                                i++;
-                                if (i==7){break;}
-                            }
+                            setListEntries(results,7);
                             setData();
 
 
@@ -285,17 +275,7 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-                            int i = 0;
-                            MainActivity.candleEntries.clear();
-                            for(JSONObject a : results){
-                                float shadowH = Float.parseFloat(a.getString("2. high"));
-                                float shadowL = Float.parseFloat(a.getString("3. low"));
-                                float open = Float.parseFloat(a.getString("1. open"));
-                                float close = Float.parseFloat(a.getString("4. close"));
-                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
-                                i++;
-                                if (i==30){break;}
-                            }
+                            setListEntries(results,30);
                             setData();
 
 
@@ -325,17 +305,7 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-                            int i = 0;
-                            MainActivity.candleEntries.clear();
-                            for(JSONObject a : results){
-                                float shadowH = Float.parseFloat(a.getString("2. high"));
-                                float shadowL = Float.parseFloat(a.getString("3. low"));
-                                float open = Float.parseFloat(a.getString("1. open"));
-                                float close = Float.parseFloat(a.getString("4. close"));
-                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
-                                i++;
-                                if (i==12){break;}
-                            }
+                            setListEntries(results,12);
 
                             setData();
 
@@ -365,17 +335,8 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-                            int i = 0;
-                            MainActivity.candleEntries.clear();
-                            for(JSONObject a : results){
-                                float shadowH = Float.parseFloat(a.getString("2. high"));
-                                float shadowL = Float.parseFloat(a.getString("3. low"));
-                                float open = Float.parseFloat(a.getString("1. open"));
-                                float close = Float.parseFloat(a.getString("4. close"));
-                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
-                                i++;
-                                if (i==results.size()-1){break;}
-                            }
+
+                            setListEntries(results,null);
 
                             setData();
 
@@ -395,6 +356,8 @@ public class JSONUtils {
         }
     }
 
+    //
+
     private static void setData(){
         handler.post(new Runnable() {
             @Override
@@ -402,6 +365,28 @@ public class JSONUtils {
                 GraphFragment.setData();
             }
         });
+    }
+
+    //Заполнение List для Chart
+
+    private static void setListEntries(List<JSONObject> results,Integer countOfValues) throws JSONException {
+        int i = 0;
+        int i2 = 0;
+        if(countOfValues==null){
+            i2 = results.size()-1;
+        }else{
+            i2 = countOfValues;
+        }
+        MainActivity.candleEntries.clear();
+        for(JSONObject a : results){
+            float shadowH = Float.parseFloat(a.getString("2. high"));
+            float shadowL = Float.parseFloat(a.getString("3. low"));
+            float open = Float.parseFloat(a.getString("1. open"));
+            float close = Float.parseFloat(a.getString("4. close"));
+            MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+            i++;
+            if (i==i2){break;}
+        }
     }
 
 }
