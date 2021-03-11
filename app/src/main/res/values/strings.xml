@@ -8,4 +8,11 @@
     <string name="forecasts">Forecasts</string>
     <string name="idea">Idea</string>
     <string name="description">Description</string>
+    <string-array name="spinner_range">
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+        <item>All</item>
+    </string-array>
 </resources>

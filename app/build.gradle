@@ -80,4 +80,5 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.0"
     implementation "android.arch.lifecycle:viewmodel:1.1.0"
     implementation 'com.neovisionaries:nv-websocket-client:2.13'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

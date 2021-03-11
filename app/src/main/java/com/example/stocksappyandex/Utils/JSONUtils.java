@@ -15,9 +15,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.stocksappyandex.Data.CompaniesDatabase;
 import com.example.stocksappyandex.Data.Company;
+import com.example.stocksappyandex.Fragments.GraphFragment;
+import com.example.stocksappyandex.Fragments.MainFragment;
 import com.example.stocksappyandex.Fragments.RecyclerViewStocksFragment;
 import com.example.stocksappyandex.MainActivity;
+import com.github.mikephil.charting.data.CandleEntry;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,10 +32,12 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.security.auth.login.LoginException;
 
 import static com.example.stocksappyandex.MainActivity.handler;
 
@@ -169,6 +175,233 @@ public class JSONUtils {
             thread2 = new Thread(runnable1);
             thread2.start();
         }
+
+        public static void getChart(String range){
+            String day = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=5min&apikey=8CQ70Y2Z0I959N5C";
+            String days = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+            String year = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    StringBuilder builder = new StringBuilder();
+                    URL url = null;
+                    HttpsURLConnection urlConnection = null;
+                    if(range.equals("Day")){
+                        String uri = String.format(day, MainFragment.selectedCompany.getTicker());
+                        try {
+                            url = new URL(uri);
+                            urlConnection = (HttpsURLConnection) url.openConnection();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                            reader.close();
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Time Series (5min)");
+                            Iterator x = jsonArray.keys();
+                            List<JSONObject> results = new ArrayList<>();
+                            while (x.hasNext()){
+                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            }
+                            int i = 0;
+                            MainActivity.candleEntries.clear();
+                            for(JSONObject a : results){
+                                float shadowH = Float.parseFloat(a.getString("2. high"));
+                                float shadowL = Float.parseFloat(a.getString("3. low"));
+                                float open = Float.parseFloat(a.getString("1. open"));
+                                float close = Float.parseFloat(a.getString("4. close"));
+                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+                                i++;
+                            }
+                            setData();
+
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else if(range.equals("Week")){
+                        String uri = String.format(days, MainFragment.selectedCompany.getTicker());
+                        try {
+                            url = new URL(uri);
+                            urlConnection = (HttpsURLConnection) url.openConnection();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                            reader.close();
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Time Series (Daily)");
+                            Iterator x = jsonArray.keys();
+                            List<JSONObject> results = new ArrayList<>();
+                            while (x.hasNext()){
+                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            }
+                            int i = 0;
+                            MainActivity.candleEntries.clear();
+                            for(JSONObject a : results){
+                                float shadowH = Float.parseFloat(a.getString("2. high"));
+                                float shadowL = Float.parseFloat(a.getString("3. low"));
+                                float open = Float.parseFloat(a.getString("1. open"));
+                                float close = Float.parseFloat(a.getString("4. close"));
+                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+                                i++;
+                                if (i==7){break;}
+                            }
+                            setData();
+
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else if(range.equals("Month")){
+                        String uri = String.format(days, MainFragment.selectedCompany.getTicker());
+                        try {
+                            url = new URL(uri);
+                            urlConnection = (HttpsURLConnection) url.openConnection();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                            reader.close();
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Time Series (Daily)");
+                            Iterator x = jsonArray.keys();
+                            List<JSONObject> results = new ArrayList<>();
+                            while (x.hasNext()){
+                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            }
+                            int i = 0;
+                            MainActivity.candleEntries.clear();
+                            for(JSONObject a : results){
+                                float shadowH = Float.parseFloat(a.getString("2. high"));
+                                float shadowL = Float.parseFloat(a.getString("3. low"));
+                                float open = Float.parseFloat(a.getString("1. open"));
+                                float close = Float.parseFloat(a.getString("4. close"));
+                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+                                i++;
+                                if (i==30){break;}
+                            }
+                            setData();
+
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else if(range.equals("Year")){
+                        String uri = String.format(year, MainFragment.selectedCompany.getTicker());
+                        try {
+                            url = new URL(uri);
+                            urlConnection = (HttpsURLConnection) url.openConnection();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                            reader.close();
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Monthly Time Series");
+                            Iterator x = jsonArray.keys();
+                            List<JSONObject> results = new ArrayList<>();
+                            while (x.hasNext()){
+                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            }
+                            int i = 0;
+                            MainActivity.candleEntries.clear();
+                            for(JSONObject a : results){
+                                float shadowH = Float.parseFloat(a.getString("2. high"));
+                                float shadowL = Float.parseFloat(a.getString("3. low"));
+                                float open = Float.parseFloat(a.getString("1. open"));
+                                float close = Float.parseFloat(a.getString("4. close"));
+                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+                                i++;
+                                if (i==12){break;}
+                            }
+
+                            setData();
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else if(range.equals("All")){
+                        String uri = String.format(year, MainFragment.selectedCompany.getTicker());
+                        try {
+                            url = new URL(uri);
+                            urlConnection = (HttpsURLConnection) url.openConnection();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                            reader.close();
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Monthly Time Series");
+                            Iterator x = jsonArray.keys();
+                            List<JSONObject> results = new ArrayList<>();
+                            while (x.hasNext()){
+                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            }
+                            int i = 0;
+                            MainActivity.candleEntries.clear();
+                            for(JSONObject a : results){
+                                float shadowH = Float.parseFloat(a.getString("2. high"));
+                                float shadowL = Float.parseFloat(a.getString("3. low"));
+                                float open = Float.parseFloat(a.getString("1. open"));
+                                float close = Float.parseFloat(a.getString("4. close"));
+                                MainActivity.candleEntries.add(new CandleEntry(i,shadowH,shadowL,open,close));
+                                i++;
+                                if (i==results.size()-1){break;}
+                            }
+
+                            setData();
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+                }
+            }).start();
+        }
+    }
+
+    private static void setData(){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                GraphFragment.setData();
+            }
+        });
     }
 
 }

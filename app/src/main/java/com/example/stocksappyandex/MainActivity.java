@@ -21,8 +21,10 @@ import com.example.stocksappyandex.Data.Company;
 import com.example.stocksappyandex.Data.MainViewModel;
 import com.example.stocksappyandex.Fragments.MainFragment;
 import com.example.stocksappyandex.Fragments.SelectedCompanyFragment;
+import com.example.stocksappyandex.Utils.JSONUtils;
 import com.example.stocksappyandex.Utils.NetworkUtils;
 import com.example.stocksappyandex.Utils.WebSoketUtils;
+import com.github.mikephil.charting.data.CandleEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.concurrent.ExecutionException;
 //Главное активити программы. Содержит вью пейджер для двух фрагментов: Main Fragment и Selected Company Fragment
 
 public class MainActivity extends AppCompatActivity {
+
+
 
     public static Handler handler = new Handler();
 
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static List<Company> listStock = new ArrayList<>();
     public static List<Company> listFavourites = new ArrayList<>();
+    public static List<CandleEntry> candleEntries = new ArrayList<>();
 
 
     @Override
@@ -93,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void setupViewPager(ViewPager viewPager){}
