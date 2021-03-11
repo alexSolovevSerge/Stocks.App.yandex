@@ -185,10 +185,12 @@ public class JSONUtils {
 
         //Загрузка данных для чарта с API
 
-        public static void getChart(String range){
-            String day = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=5min&apikey=8CQ70Y2Z0I959N5C";
-            String days = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
-            String year = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+        public static String day = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=5min&apikey=8CQ70Y2Z0I959N5C";
+        public static String days = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+        public static String year = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+
+        public static void getChart(String range, Context context){
+
 
 
             new Thread(new Runnable() {
@@ -208,6 +210,9 @@ public class JSONUtils {
                                 builder.append(line);
                             }
                             reader.close();
+
+
+
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Time Series (5min)");
                             Iterator x = jsonArray.keys();
@@ -224,7 +229,17 @@ public class JSONUtils {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             e.printStackTrace();
+                        }finally {
+                            if(urlConnection!=null){
+                                urlConnection.disconnect();
+                            }
                         }
 
                     }else if(range.equals("Week")){
@@ -254,7 +269,17 @@ public class JSONUtils {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             e.printStackTrace();
+                        }finally {
+                            if(urlConnection!=null){
+                                urlConnection.disconnect();
+                            }
                         }
 
                     }else if(range.equals("Month")){
@@ -284,7 +309,17 @@ public class JSONUtils {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             e.printStackTrace();
+                        }finally {
+                            if(urlConnection!=null){
+                                urlConnection.disconnect();
+                            }
                         }
 
                     }else if(range.equals("Year")){
@@ -314,7 +349,17 @@ public class JSONUtils {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             e.printStackTrace();
+                        }finally {
+                            if(urlConnection!=null){
+                                urlConnection.disconnect();
+                            }
                         }
 
                     }else if(range.equals("All")){
@@ -345,7 +390,17 @@ public class JSONUtils {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             e.printStackTrace();
+                        }finally {
+                            if(urlConnection!=null){
+                                urlConnection.disconnect();
+                            }
                         }
 
                     }

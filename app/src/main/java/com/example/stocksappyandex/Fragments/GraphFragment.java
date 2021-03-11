@@ -68,12 +68,12 @@ public class GraphFragment extends Fragment {
         Legend l = candleStickChart.getLegend();
         l.setEnabled(false);
 
-        JSONUtils.GetListCompanyObj.getChart(spinnerrange.getSelectedItem().toString());
+        JSONUtils.GetListCompanyObj.getChart(spinnerrange.getSelectedItem().toString(),getContext());
 
         spinnerrange.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                JSONUtils.GetListCompanyObj.getChart(spinnerrange.getSelectedItem().toString());
+                JSONUtils.GetListCompanyObj.getChart(spinnerrange.getSelectedItem().toString(),getContext());
             }
 
             @Override
