@@ -41,6 +41,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.security.auth.login.LoginException;
 
 import static com.example.stocksappyandex.MainActivity.handler;
+import static java.lang.Thread.sleep;
 
 public class JSONUtils {
 
@@ -49,7 +50,7 @@ public class JSONUtils {
 
     public static class GetListCompanyObj {
 
-        private Context context;
+        private static Context context;
         private Activity activity;
 
         public static Thread thread;
@@ -67,6 +68,7 @@ public class JSONUtils {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+                    Log.i("thread", Thread.currentThread().getName());
                     String urltt = "https://finnhub.io/api/v1/stock/profile2?symbol=%s&token=%s";
                     List<Company> list = new ArrayList<>();
                     URL url = null;
@@ -90,11 +92,18 @@ public class JSONUtils {
                         String ticker = jsonObject.getString("ticker");
                         String name = jsonObject.getString("name");
                         boolean favourite = false;
-                        String logopath = jsonObject.getString("weburl");
+                        String logopath;
+                        if(ticker.equals("GS")){
+                            logopath = "https://www.goldmansachs.com/";
+                        }else {
+                            logopath = jsonObject.getString("weburl");
+                        }
+                        URL urlogo = new URL(logopath);
+                        logopath = urlogo.getHost();
                         long currentprice = 0;
                         long deltaprice = 0;
 
-                        url = new URL(String.format("https://logo.clearbit.com/%s",logopath).replace("https://www.",""));
+                        url = new URL(String.format("https://logo.clearbit.com/%s",logopath).replace("www.",""));
                         urlConnection1 = (HttpsURLConnection) url.openConnection();
                         bitmap = BitmapFactory.decodeStream(urlConnection1.getInputStream());
                         String bitmapencode = BitMapToString(bitmap);
@@ -143,6 +152,7 @@ public class JSONUtils {
             Runnable runnable1 = new Runnable() {
                 @Override
                 public void run() {
+                    Log.i("thread", Thread.currentThread().getName());
                     StringBuilder builder = new StringBuilder();
                     URL url = null;
                     HttpsURLConnection urlConnection = null;
@@ -190,29 +200,14 @@ public class JSONUtils {
         public static String year = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
 
         public static void getChart(String range, Context context){
-
-
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    StringBuilder builder = new StringBuilder();
-                    URL url = null;
-                    HttpsURLConnection urlConnection = null;
-                    if(range.equals("Day")){
+                    String[] rangeIn = {"Day","Week","Month","Year","All"};
+                    if(range.equals(rangeIn[0])){
                         String uri = String.format(day, MainFragment.selectedCompany.getTicker());
                         try {
-                            url = new URL(uri);
-                            urlConnection = (HttpsURLConnection) url.openConnection();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                builder.append(line);
-                            }
-                            reader.close();
-
-
-
+                            StringBuilder builder = jsonConnect(uri);
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Time Series (5min)");
                             Iterator x = jsonArray.keys();
@@ -222,37 +217,22 @@ public class JSONUtils {
                             }
                             setListEntries(results,null);
                             setData();
-
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
+                            e.printStackTrace();
+
+                            connectionTimaOutAction(rangeIn[0]);
+                        }catch (NullPointerException e){
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context,"Не удалось подключиться",Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            e.printStackTrace();
-                        }finally {
-                            if(urlConnection!=null){
-                                urlConnection.disconnect();
-                            }
                         }
-
-                    }else if(range.equals("Week")){
+                    }else if(range.equals(rangeIn[1])){
                         String uri = String.format(days, MainFragment.selectedCompany.getTicker());
                         try {
-                            url = new URL(uri);
-                            urlConnection = (HttpsURLConnection) url.openConnection();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                builder.append(line);
-                            }
-                            reader.close();
+                            StringBuilder builder = jsonConnect(uri);
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Time Series (Daily)");
                             Iterator x = jsonArray.keys();
@@ -262,37 +242,14 @@ public class JSONUtils {
                             }
                             setListEntries(results,7);
                             setData();
-
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             e.printStackTrace();
-                        }finally {
-                            if(urlConnection!=null){
-                                urlConnection.disconnect();
-                            }
+                            connectionTimaOutAction(rangeIn[1]);
                         }
-
-                    }else if(range.equals("Month")){
+                    }else if(range.equals(rangeIn[2])){
                         String uri = String.format(days, MainFragment.selectedCompany.getTicker());
                         try {
-                            url = new URL(uri);
-                            urlConnection = (HttpsURLConnection) url.openConnection();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                builder.append(line);
-                            }
-                            reader.close();
+                            StringBuilder builder = jsonConnect(uri);
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Time Series (Daily)");
                             Iterator x = jsonArray.keys();
@@ -302,77 +259,33 @@ public class JSONUtils {
                             }
                             setListEntries(results,30);
                             setData();
-
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            e.printStackTrace();
-                        }finally {
-                            if(urlConnection!=null){
-                                urlConnection.disconnect();
-                            }
-                        }
 
-                    }else if(range.equals("Year")){
+                            e.printStackTrace();
+                        }
+                    }else if(range.equals(rangeIn[3])) {
                         String uri = String.format(year, MainFragment.selectedCompany.getTicker());
                         try {
-                            url = new URL(uri);
-                            urlConnection = (HttpsURLConnection) url.openConnection();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                builder.append(line);
-                            }
-                            reader.close();
+                            StringBuilder builder = jsonConnect(uri);
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Monthly Time Series");
                             Iterator x = jsonArray.keys();
                             List<JSONObject> results = new ArrayList<>();
-                            while (x.hasNext()){
-                                results.add((JSONObject)jsonArray.get(x.next().toString()));
+                            while (x.hasNext()) {
+                                results.add((JSONObject) jsonArray.get(x.next().toString()));
                             }
-                            setListEntries(results,12);
+                            setListEntries(results, 12);
 
                             setData();
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            e.printStackTrace();
-                        }finally {
-                            if(urlConnection!=null){
-                                urlConnection.disconnect();
-                            }
-                        }
 
-                    }else if(range.equals("All")){
+                            e.printStackTrace();
+                            connectionTimaOutAction(rangeIn[3]);
+                        }
+                    }else if(range.equals(rangeIn[4])){
                         String uri = String.format(year, MainFragment.selectedCompany.getTicker());
                         try {
-                            url = new URL(uri);
-                            urlConnection = (HttpsURLConnection) url.openConnection();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                builder.append(line);
-                            }
-                            reader.close();
+                            StringBuilder builder = jsonConnect(uri);
                             JSONObject jsonObject = new JSONObject(builder.toString());
                             JSONObject jsonArray = jsonObject.getJSONObject("Monthly Time Series");
                             Iterator x = jsonArray.keys();
@@ -380,38 +293,61 @@ public class JSONUtils {
                             while (x.hasNext()){
                                 results.add((JSONObject)jsonArray.get(x.next().toString()));
                             }
-
                             setListEntries(results,null);
-
                             setData();
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context,"Слишком много запросов к API, подождите",Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             e.printStackTrace();
-                        }finally {
-                            if(urlConnection!=null){
-                                urlConnection.disconnect();
-                            }
+                            connectionTimaOutAction(rangeIn[4]);
                         }
-
                     }
-
-
                 }
             }).start();
         }
     }
 
-    //
+
+    //Действие при слишком частом запросе к API(TimeOutError)
+
+    private static void connectionTimaOutAction(String range){
+        try {
+            sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+        if(MainActivity.adapter.getItemCount()==2&&GraphFragment.spinnerrange!=null&&GraphFragment.spinnerrange.getSelectedItem().toString().equals(range)){
+            JSONUtils.GetListCompanyObj.getChart(GraphFragment.spinnerrange.getSelectedItem().toString(), GetListCompanyObj.context);
+        }
+    }
+
+    //Загрузка JSON для Chart
+
+    public static StringBuilder jsonConnect(String uri){
+        URL url = null;
+        HttpsURLConnection urlConnection = null;
+        StringBuilder builder = new StringBuilder();
+        try {
+            url = new URL(uri);
+            urlConnection = (HttpsURLConnection) url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+            reader.close();
+            return builder;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(urlConnection!=null){
+                urlConnection.disconnect();
+            }
+        }
+        return null;
+    }
+
+    //Присваивание значений в Chart
 
     private static void setData(){
         handler.post(new Runnable() {

@@ -32,8 +32,8 @@ public class GraphFragment extends Fragment {
 
     public static RecyclerView recyclerViewFavouriteCompanies;
     private static CandleStickChart candleStickChart;
-    private TextView textViewPrice;
-    private Spinner spinnerrange;
+    public static TextView textViewPrice;
+    public static Spinner spinnerrange;
 
     @Nullable
     @Override

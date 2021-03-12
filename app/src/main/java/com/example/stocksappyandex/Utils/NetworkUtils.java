@@ -2,6 +2,7 @@ package com.example.stocksappyandex.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 
 import java.io.BufferedReader;
@@ -39,6 +40,7 @@ public class NetworkUtils {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+                    Log.i("thread", Thread.currentThread().getName());
                     String URL1 = "https://www.slickcharts.com/dowjones";
                     StringBuilder builder = new StringBuilder();
 
@@ -67,9 +69,8 @@ public class NetworkUtils {
                         for (String a : set) {
                                 res.add(a);
                         }
-                        for (int i = 0; i <= res.size() - 1; i = i + 2) {
+                        for (int i = 0; i < res.size(); i++) {
                             getListCompanyObj.getList(res.get(i));
-                            getListCompanyObj.getList(res.get(i + 1));
                         }
 
 

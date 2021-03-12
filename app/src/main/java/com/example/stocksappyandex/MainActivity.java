@@ -12,13 +12,18 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.stocksappyandex.Data.CompaniesAdapter;
 import com.example.stocksappyandex.Data.Company;
 import com.example.stocksappyandex.Data.MainViewModel;
+import com.example.stocksappyandex.Fragments.GraphFragment;
 import com.example.stocksappyandex.Fragments.MainFragment;
 import com.example.stocksappyandex.Fragments.SelectedCompanyFragment;
 import com.example.stocksappyandex.Utils.JSONUtils;
@@ -66,8 +71,10 @@ public class MainActivity extends AppCompatActivity {
         getDataFavourite(viewModel.getFavouriteCompanys());
         new WebSoketUtils().getTickerPrice(listStock);
         try {
-            if(viewModel.getCompaniesCount()>0){}
-            else{
+            if(viewModel.getCompaniesCount()>0&&isNetworkAvailable()){
+                Log.i("CONNECT", "EST CONNECT");
+            }
+            else {
                 getArray.getArr();
             }
         } catch (ExecutionException e) {
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         adapter = new SectionsStagePagerAdapter(getSupportFragmentManager(),getLifecycle());
         adapter.addFragment(new MainFragment());
         adapter.createFragment(0);
@@ -129,6 +137,22 @@ public class MainActivity extends AppCompatActivity {
                 listStock.clear();
                 listStock.addAll(companiesFromLiveData);
                 adapterStock.notifyDataSetChanged();
+                final String[] currentprice = new String[1];
+                if(GraphFragment.textViewPrice!=null&&MainFragment.selectedCompany!=null){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentprice[0] = viewModel.getCompanyByTicker(MainFragment.selectedCompany.getTicker()).getCurrentprice()+"";
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    GraphFragment.textViewPrice.setText("$" + currentprice[0]);
+                                }
+                            });
+                        }
+                    }).start();
+
+                }
             }
         });
         if(comp.size()>0){
@@ -158,8 +182,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void backButtonOnSearch(){
-
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

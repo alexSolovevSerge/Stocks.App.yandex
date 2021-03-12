@@ -36,6 +36,8 @@ public class WebSoketUtils {
                             try {
                                 ws = connect();
                                 for (Company a : list) {
+                                    //ws.sendText(String.format(socketURL.replace("subscribe","unsubscribe"), a.getTicker()));
+                                }for (Company a : list) {
                                     ws.sendText(String.format(socketURL, a.getTicker()));
                                 }
                                 while (true){
@@ -62,8 +64,10 @@ public class WebSoketUtils {
                 .addListener(new WebSocketAdapter() {
                     @Override
                     public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                        Log.i("websocket", text);
-                        if(text.length()<120){setPrice(text);}
+
+                        String textsub = text.substring(0,120);
+                        Log.i("websocket", textsub);
+                        setPrice(textsub);
                     }
                 })
                 .addExtension(WebSocketExtension.PERMESSAGE_DEFLATE)

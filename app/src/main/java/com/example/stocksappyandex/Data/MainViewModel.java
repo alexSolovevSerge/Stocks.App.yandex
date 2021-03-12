@@ -31,6 +31,7 @@ public class MainViewModel extends AndroidViewModel {
         return companies;
     }
 
+
     public LiveData<List<Company>> getFavouriteCompanys(){
         return database.companiesDao().getFavouriteCompanies();
     }

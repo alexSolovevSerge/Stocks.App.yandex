@@ -57,6 +57,7 @@ public class MainFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.containerStocksFav);
 
+
         setupViewPager(viewPager);
         List<String> names = new ArrayList<>();
         names.add("Stocks");
@@ -73,6 +74,7 @@ public class MainFragment extends Fragment {
 
             }
         }).attach();
+
 
 
         editTextSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {

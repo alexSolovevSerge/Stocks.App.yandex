@@ -28,6 +28,7 @@ public interface CompaniesDao {
     @Query("SELECT * FROM companies WHERE id=:companyId")
     Company getCompanyById(int companyId);
 
+
     @Query("SELECT * FROM companies WHERE ticker=:ticker")
     Company getCompanyByTicker(String ticker);
 

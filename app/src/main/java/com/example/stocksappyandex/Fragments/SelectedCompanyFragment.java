@@ -1,6 +1,7 @@
 package com.example.stocksappyandex.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,16 +47,15 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
         setupViewPager(viewPagerInfo);
+        Log.i("TAG",MainActivity.listStock.size()+"");
+
 
         List<String> names = new ArrayList<>();
         names.add("Chart");
         names.add("Summary");
         names.add("News");
-        names.add("Forecasts");
-        names.add("Idea");
-
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutInfo);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
         new TabLayoutMediator(tabLayout, viewPagerInfo, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
@@ -111,6 +111,7 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
        MainActivity.viewPager.setCurrentItem(0);
        MainActivity.adapter.removeFragment(1);
        MainActivity.viewPager.getAdapter().notifyDataSetChanged();
+       MainFragment.selectedCompany=null;
     }
     private void favoutiteSetterButton(){
         if(MainFragment.selectedCompany.isFavourite()){
@@ -132,13 +133,10 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         adapter.addFragment(new GraphFragment());
         adapter.addFragment(new DescriptionFragment());
         adapter.addFragment(new NewsFragment());
-        adapter.addFragment(new ForecastsFragment());
-        adapter.addFragment(new IdeaFragment());
         adapter.createFragment(0);
         adapter.createFragment(1);
         adapter.createFragment(2);
-        adapter.createFragment(3);
-        adapter.createFragment(4);
+
 
 
 
