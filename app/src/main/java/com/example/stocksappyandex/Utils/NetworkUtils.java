@@ -71,12 +71,15 @@ public class NetworkUtils {
                         }
                         for (int i = 0; i < res.size(); i++) {
                             getListCompanyObj.getList(res.get(i));
+                            sleep(100);
                         }
 
 
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
                         if (urlConnection != null) {

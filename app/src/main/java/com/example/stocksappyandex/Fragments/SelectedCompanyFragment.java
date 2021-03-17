@@ -21,6 +21,7 @@ import com.example.stocksappyandex.Data.Company;
 import com.example.stocksappyandex.MainActivity;
 import com.example.stocksappyandex.R;
 import com.example.stocksappyandex.SectionsStagePagerAdapter;
+import com.example.stocksappyandex.Utils.JSONUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -46,6 +47,8 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
 
         sectionsStagePagerAdapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
 
+
+
         setupViewPager(viewPagerInfo);
         Log.i("TAG",MainActivity.listStock.size()+"");
 
@@ -53,7 +56,6 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         List<String> names = new ArrayList<>();
         names.add("Chart");
         names.add("Summary");
-        names.add("News");
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutInfo);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         new TabLayoutMediator(tabLayout, viewPagerInfo, false, true, new TabLayoutMediator.TabConfigurationStrategy() {
@@ -79,6 +81,9 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             else{
                 imageViewFavourite.setImageResource(R.drawable.nonfavourite);
             }
+            if(MainFragment.selectedCompany.getSummary().length()<2){
+                JSONUtils.GetListCompanyObj.getSummary(MainFragment.selectedCompany);
+            }
         }
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -88,6 +93,8 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(callback);
+
+
 
         return view;
     }
@@ -132,10 +139,8 @@ public class SelectedCompanyFragment extends Fragment implements View.OnClickLis
         SectionsStagePagerAdapter adapter = new SectionsStagePagerAdapter(getFragmentManager(),getLifecycle());
         adapter.addFragment(new GraphFragment());
         adapter.addFragment(new DescriptionFragment());
-        adapter.addFragment(new NewsFragment());
         adapter.createFragment(0);
         adapter.createFragment(1);
-        adapter.createFragment(2);
 
 
 

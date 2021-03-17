@@ -53,12 +53,12 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.Comp
         holder.textViewticker.setText(company.getTicker());
         Double currentprice = company.getCurrentprice();
         Double deltaprice = company.getDeltaprice();
-        holder.textViewcurrentPrice.setText(String.format("$%.3f", company.getCurrentprice()));
+        holder.textViewcurrentPrice.setText(String.format("$%.2f", company.getCurrentprice()));
         if(deltaprice<0) {
-            holder.textViewDeltaPrice.setText(String.format("-$%.3f", Math.abs(company.getDeltaprice())));
+            holder.textViewDeltaPrice.setText(String.format("-$%.2f(%.3f%%)", Math.abs(company.getDeltaprice()),Math.abs(company.getDeltaprice()/(company.getCurrentprice()+company.getDeltaprice()))));
             holder.textViewDeltaPrice.setTextColor(Color.parseColor("#ffff4444"));
         }else if (deltaprice>0){
-            holder.textViewDeltaPrice.setText(String.format("+$%.3f", Math.abs(company.getDeltaprice())));
+            holder.textViewDeltaPrice.setText(String.format("+$%.2f(%.3f%%)", Math.abs(company.getDeltaprice()),Math.abs(company.getDeltaprice()/(company.getCurrentprice()+company.getDeltaprice()))));
             holder.textViewDeltaPrice.setTextColor(Color.parseColor("#00d024"));
         }
         String bitmap = company.getBitmap();

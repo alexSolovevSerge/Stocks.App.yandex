@@ -19,6 +19,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.stocksappyandex.Data.CompaniesAdapter;
 import com.example.stocksappyandex.Data.Company;
@@ -34,6 +35,8 @@ import com.github.mikephil.charting.data.CandleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static java.lang.Thread.sleep;
 
 //Главное активити программы. Содержит вью пейджер для двух фрагментов: Main Fragment и Selected Company Fragment
 
@@ -69,13 +72,15 @@ public class MainActivity extends AppCompatActivity {
         adapterFavourites = new CompaniesAdapter(listFavourites);
         getDataStock(this,viewModel.getCompanies());
         getDataFavourite(viewModel.getFavouriteCompanys());
-        new WebSoketUtils().getTickerPrice(listStock);
+
         try {
             if(viewModel.getCompaniesCount()>0&&isNetworkAvailable()){
-                Log.i("CONNECT", "EST CONNECT");
+                updateTickerPrice();
+                new WebSoketUtils().getTickerPrice(listStock);
             }
-            else {
+            else if(viewModel.getCompaniesCount()==0&&isNetworkAvailable()) {
                 getArray.getArr();
+                new WebSoketUtils().getTickerPrice(listStock);
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -108,6 +113,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void updateTickerPrice(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for(Company a:listStock){
+                    JSONUtils.GetListCompanyObj.updateTickerPrice(a);
+                }
+            }
+        }).start();
     }
 
     private void setupViewPager(ViewPager viewPager){}
@@ -188,5 +209,7 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+
 
 }

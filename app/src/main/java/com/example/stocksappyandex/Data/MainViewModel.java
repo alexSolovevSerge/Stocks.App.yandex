@@ -100,6 +100,7 @@ public class MainViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(Company... companies) {
             database.companiesDao().updateCompany(companies[0]);
+
             return null;
         }
     }

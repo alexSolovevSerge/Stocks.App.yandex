@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.stocksappyandex.Data.CompaniesDatabase;
 import com.example.stocksappyandex.Data.Company;
+import com.example.stocksappyandex.Fragments.DescriptionFragment;
 import com.example.stocksappyandex.Fragments.GraphFragment;
 import com.example.stocksappyandex.Fragments.MainFragment;
 import com.example.stocksappyandex.Fragments.RecyclerViewStocksFragment;
@@ -64,11 +65,55 @@ public class JSONUtils {
 
         //Загрузка информации о тикерах с API
 
+        public static void updateTickerPrice(Company company){
+            String urlttt = "https://finnhub.io/api/v1/quote?symbol=%s&token=%s";
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    StringBuilder builder = new StringBuilder();
+                    URL url = null;
+                    HttpsURLConnection urlConnection = null;
+                    try {
+                        String uri = String.format(urlttt, company.getTicker(), KEY);
+                        url = new URL(uri);
+                        urlConnection = (HttpsURLConnection) url.openConnection();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                        reader.close();
+                        JSONObject jsonObject = new JSONObject(builder.toString());
+                        builder.setLength(0);
+                        Double currentPrice = jsonObject.getDouble("c");
+                        Double lastdayPrice = jsonObject.getDouble("pc");;
+                        company.setCurrentprice(currentPrice);
+                        company.setDeltaprice(currentPrice - lastdayPrice);
+                        MainActivity.viewModel.updateCompany(company);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.adapterStock.notifyDataSetChanged();
+                                MainActivity.adapterFavourites.notifyDataSetChanged();
+                            }
+                        });
+                    } catch (JSONException | IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (urlConnection != null) {
+                            urlConnection.disconnect();
+                        }
+                    }
+
+
+                }
+            }).start();
+        }
+
         public void getList(String ticker) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("thread", Thread.currentThread().getName());
                     String urltt = "https://finnhub.io/api/v1/stock/profile2?symbol=%s&token=%s";
                     List<Company> list = new ArrayList<>();
                     URL url = null;
@@ -152,7 +197,6 @@ public class JSONUtils {
             Runnable runnable1 = new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("thread", Thread.currentThread().getName());
                     StringBuilder builder = new StringBuilder();
                     URL url = null;
                     HttpsURLConnection urlConnection = null;
@@ -193,6 +237,53 @@ public class JSONUtils {
         }
 
 
+        public static String descriptionURL = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=%s&apikey=8CQ70Y2Z0I959N5C";
+
+        public static void getSummary(Company selectedCompany){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    StringBuilder builder = new StringBuilder();
+                    URL url = null;
+                    HttpsURLConnection urlConnection = null;
+                    String uri = String.format(descriptionURL,selectedCompany.getTicker());
+                    try {
+                        url = new URL(uri);
+                        urlConnection = (HttpsURLConnection) url.openConnection();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                        reader.close();
+                        JSONObject jsonObject = new JSONObject(builder.toString());
+
+                        String summary = jsonObject.getString("Description");
+
+                        MainFragment.selectedCompany.setSummary(summary);
+                        MainActivity.viewModel.updateCompany(MainFragment.selectedCompany);
+                        if(DescriptionFragment.textViewDescription!=null){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DescriptionFragment.textViewDescription.setText(summary);
+                                }
+                            });
+                        }
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
+
+
         //Загрузка данных для чарта с API
 
         public static String day = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=5min&apikey=8CQ70Y2Z0I959N5C";
@@ -219,8 +310,19 @@ public class JSONUtils {
                             setData();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(context,"Wait for API Timeout",Toast.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            });
 
                             connectionTimaOutAction(rangeIn[0]);
+
                         }catch (NullPointerException e){
                             handler.post(new Runnable() {
                                 @Override
@@ -244,7 +346,18 @@ public class JSONUtils {
                             setData();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(context,"Wait for API Timeout",Toast.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            });
                             connectionTimaOutAction(rangeIn[1]);
+
                         }
                     }else if(range.equals(rangeIn[2])){
                         String uri = String.format(days, MainFragment.selectedCompany.getTicker());
@@ -260,8 +373,18 @@ public class JSONUtils {
                             setListEntries(results,30);
                             setData();
                         } catch (JSONException e) {
-
                             e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(context,"Wait for API Timeout",Toast.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            });
+                            connectionTimaOutAction(rangeIn[2]);
                         }
                     }else if(range.equals(rangeIn[3])) {
                         String uri = String.format(year, MainFragment.selectedCompany.getTicker());
@@ -280,6 +403,16 @@ public class JSONUtils {
                         } catch (JSONException e) {
 
                             e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(context,"Wait for API Timeout",Toast.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            });
                             connectionTimaOutAction(rangeIn[3]);
                         }
                     }else if(range.equals(rangeIn[4])){
@@ -297,6 +430,16 @@ public class JSONUtils {
                             setData();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(context,"Wait for API Timeout",Toast.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            });
                             connectionTimaOutAction(rangeIn[4]);
                         }
                     }
@@ -310,7 +453,7 @@ public class JSONUtils {
 
     private static void connectionTimaOutAction(String range){
         try {
-            sleep(2000);
+            sleep(4000);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
