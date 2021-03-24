@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 
+import com.example.stocksappyandex.MainActivity;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -100,6 +102,7 @@ public class MainViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(Company... companies) {
             database.companiesDao().updateCompany(companies[0]);
+
 
             return null;
         }

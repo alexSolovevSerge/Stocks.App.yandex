@@ -85,6 +85,11 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.Comp
         return companies.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return companies.get(position).getId();
+    }
+
     public void setCompanies(List<Company> companies) {
 
         this.companies = companies;
