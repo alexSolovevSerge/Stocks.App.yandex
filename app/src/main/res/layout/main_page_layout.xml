@@ -44,7 +44,7 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_anchorGravity="start"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|snap">
 
             <EditText
                 android:id="@+id/editTextTextPersonName"
