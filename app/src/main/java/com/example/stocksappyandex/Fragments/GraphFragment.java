@@ -20,6 +20,7 @@ import com.example.stocksappyandex.MainActivity;
 import com.example.stocksappyandex.R;
 import com.example.stocksappyandex.Utils.JSONUtils;
 import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -50,6 +51,9 @@ public class GraphFragment extends Fragment {
 
         candleStickChart.setDrawBorders(true);
         candleStickChart.setBorderColor(Color.GRAY);
+        Description desc = new Description();
+        desc.setText("");
+        candleStickChart.setDescription(desc);
         YAxis yAxis = candleStickChart.getAxisLeft();
         YAxis rightAxis = candleStickChart.getAxisRight();
         yAxis.setDrawGridLines(false);
